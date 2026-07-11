@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D 模型预览器 · 规划方案报告</title>
+<style>
+  :root{
+    --bg:#0f1117;
+    --bg2:#161922;
+    --card:#1c2030;
+    --border:#2a2f42;
+    --text:#e6e8f0;
+    --muted:#9aa0b5;
+    --accent:#6c8cff;
+    --accent2:#36d1c4;
+    --warn:#ffb86b;
+    --danger:#ff6b8a;
+    --ok:#7cf0a3;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",-apple-system,Segoe UI,Roboto,sans-serif;
+    background:linear-gradient(180deg,#0b0d14 0,#0f1117 100%);
+    color:var(--text);
+    line-height:1.7;
+    padding:32px 20px 80px;
+    min-height:100vh;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+
+  /* 头部 */
+  .hero{
+    background:linear-gradient(135deg,rgba(108,140,255,.15),rgba(54,209,196,.08));
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:40px 36px;
+    margin-bottom:32px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 80% 20%,rgba(108,140,255,.18),transparent 50%);
+    pointer-events:none;
+  }
+  .hero h1{
+    font-size:30px;font-weight:700;letter-spacing:.5px;
+    background:linear-gradient(90deg,#fff,#9bb0ff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:10px;position:relative;
+  }
+  .hero .sub{color:var(--muted);font-size:14px;position:relative}
+  .hero .badges{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;position:relative}
+  .badge{
+    font-size:12px;padding:5px 12px;border-radius:999px;
+    background:rgba(108,140,255,.12);border:1px solid rgba(108,140,255,.3);
+    color:#aebfff;
+  }
+  .badge.alt{background:rgba(54,209,196,.1);border-color:rgba(54,209,196,.3);color:#7fe3da}
+
+  /* 区块 */
+  section{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:28px 30px;
+    margin-bottom:24px;
+  }
+  section > h2{
+    font-size:19px;font-weight:600;margin-bottom:18px;
+    padding-left:12px;border-left:3px solid var(--accent);
+    display:flex;align-items:center;gap:10px;
+  }
+  section > h2 .num{
+    display:inline-flex;width:26px;height:26px;border-radius:8px;
+    background:rgba(108,140,255,.15);color:var(--accent);
+    font-size:13px;align-items:center;justify-content:center;
+  }
+  h3{font-size:15px;color:#cdd2e6;margin:18px 0 10px;font-weight:600}
+  p{color:#c8ccdf;margin-bottom:10px}
+  ul,ol{margin:8px 0 14px 22px;color:#c8ccdf}
+  li{margin:4px 0}
+  a{color:var(--accent2);text-decoration:none}
+
+  code{
+    background:rgba(108,140,255,.12);color:#aebfff;
+    padding:2px 7px;border-radius:6px;font-size:13px;
+    font-family:"Cascadia Code",Consolas,monospace;
+  }
+
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border)}
+  th{background:rgba(108,140,255,.06);color:#cdd2e6;font-weight:600;font-size:13px}
+  tr:hover td{background:rgba(108,140,255,.04)}
+  td .star{color:var(--warn);letter-spacing:1px}
+
+  /* 卡片网格 */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:14px 0}
+  .feat-card{
+    background:var(--bg2);border:1px solid var(--border);
+    border-radius:10px;padding:16px;
+  }
+  .feat-card .t{font-weight:600;color:#e6e8f0;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .feat-card .d{font-size:13px;color:var(--muted)}
+  .feat-card .icon{
+    width:30px;height:30px;border-radius:8px;
+    background:rgba(108,140,255,.12);color:var(--accent);
+    display:inline-flex;align-items:center;justify-content:center;font-size:15px;
+  }
+
+  /* 技术对比 */
+  .tech-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr 1fr;gap:0}
+  .tech-row > div{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px}
+  .tech-row.head > div{background:rgba(108,140,255,.06);font-weight:600;color:#cdd2e6;font-size:12px}
+  .rec{color:var(--ok);font-weight:600}
+
+  /* 阶段 */
+  .phase{
+    background:var(--bg2);border:1px solid var(--border);
+    border-left:3px solid var(--accent);
+    border-radius:8px;padding:16px 18px;margin:12px 0;
+  }
+  .phase .pt{
+    font-weight:600;color:#e6e8f0;display:flex;justify-content:space-between;align-items:center;
+  }
+  .phase .pt .tag{
+    font-size:11px;padding:3px 9px;border-radius:6px;
+    background:rgba(124,240,163,.12);color:var(--ok);border:1px solid rgba(124,240,163,.25);
+  }
+  .phase ul{margin:8px 0 0}
+  .phase .accept{
+    margin-top:10px;padding:8px 12px;border-radius:6px;
+    background:rgba(255,184,107,.08);border:1px solid rgba(255,184,107,.2);
+    color:var(--warn);font-size:13px;
+  }
+
+  /* 风险 */
+  .risk{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+  .risk-item{
+    background:var(--bg2);border:1px solid var(--border);
+    border-radius:8px;padding:14px;
+  }
+  .risk-item .rt{color:var(--danger);font-weight:600;font-size:14px;margin-bottom:6px}
+  .risk-item .rc{color:var(--muted);font-size:13px}
+
+  /* 布局示意 */
+  .layout{
+    background:#0a0c12;border:1px solid var(--border);border-radius:8px;
+    padding:18px;font-family:"Cascadia Code",Consolas,monospace;
+    font-size:12.5px;line-height:1.5;color:#9aa0b5;white-space:pre;overflow:auto;
+  }
+
+  /* 目录树 */
+  .tree{
+    background:#0a0c12;border:1px solid var(--border);border-radius:8px;
+    padding:18px;font-family:"Cascadia Code",Consolas,monospace;
+    font-size:13px;line-height:1.65;color:#9aa0b5;white-space:pre;overflow:auto;
+  }
+  .tree .k{color:#aebfff}
+  .tree .c{color:#5c6378}
+
+  /* 页脚 */
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--border)}
+
+  @media(max-width:768px){
+    .hero{padding:28px 22px}
+    .hero h1{font-size:24px}
+    section{padding:22px 18px}
+    .risk,.tech-row{grid-template-columns:1fr}
+    .tech-row > div{display:block;border-right:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>3D 模型预览器 · 规划方案</h1>
+    <div class="sub">本地化轻量工具 ｜ 单文件 exe 双击即用 ｜ 对标 thepoly.cn/tools/model-viewer</div>
+    <div class="badges">
+      <span class="badge">Tauri 2.x</span>
+      <span class="badge">Vue 3</span>
+      <span class="badge">Three.js</span>
+      <span class="badge alt">体积 &lt; 10MB</span>
+      <span class="badge alt">离线运行</span>
+      <span class="badge alt">无需安装</span>
+    </div>
+  </div>
+
+  <!-- 1. 项目目标 -->
+  <section>
+    <h2><span class="num">1</span>项目目标</h2>
+    <p>开发一款<strong>单文件 exe、双击即用、无需安装</strong>的本地化 3D 模型预览工具，核心诉求是"轻量 + 离线 + 等效功能"，对标 thepoly.cn/tools/model-viewer 的功能。</p>
+    <p style="color:var(--muted);font-size:13px">参考网页：<a href="https://www.thepoly.cn/tools/model-viewer" target="_blank">https://www.thepoly.cn/tools/model-viewer</a></p>
+  </section>
+
+  <!-- 2. 功能需求 -->
+  <section>
+    <h2><span class="num">2</span>功能需求</h2>
+    <h3>2.1 核心功能（对标网页）</h3>
+    <div class="grid">
+      <div class="feat-card"><div class="t"><span class="icon">📥</span>模型导入</div><div class="d">拖拽 / 点击导入，支持多文件批量</div></div>
+      <div class="feat-card"><div class="t"><span class="icon">📦</span>格式支持</div><div class="d">FBX / GLB / glTF / OBJ / PLY</div></div>
+      <div class="feat-card"><div class="t"><span class="icon">🔄</span>3D 预览</div><div class="d">旋转 / 平移 / 缩放交互</div></div>
+      <div class="feat-card"><div class="t"><span class="icon">📊</span>模型信息</div><div class="d">顶点 / 面 / 材质 / 贴图 / 动画统计</div></div>
+      <div class="feat-card"><div class="t"><span class="icon">🖼️</span>贴图导出</div><div class="d">PNG / JPG / WebP 提取保存</div></div>
+      <div class="feat-card"><div class="t"><span class="icon">⚙️</span>场景控制</div><div class="d">网格 / 坐标轴 / 背景 / 灯光</div></div>
+      <div class="feat-card"><div class="t"><span class="icon">🎨</span>显示模式</div><div class="d">实体 / 线框 / 法线 / 骨骼</div></div>
+      <div class="feat-card"><div class="t"><span class="icon">🎬</span>动画播放</div><div class="d">播放 / 暂停 / 进度 / 循环</div></div>
+    </div>
+    <h3>2.2 增强功能（本地化优势）</h3>
+    <ul>
+      <li><strong>最近打开列表</strong>：本地持久化最近 10 个文件</li>
+      <li><strong>截图导出</strong>：当前视角 PNG 截图</li>
+      <li><strong>格式转换</strong>：FBX/OBJ → GLB（离线转换，可选）</li>
+    </ul>
+  </section>
+
+  <!-- 3. 技术选型 -->
+  <section>
+    <h2><span class="num">3</span>技术选型</h2>
+    <h3>3.1 方案对比</h3>
+    <div class="tech-row head">
+      <div>方案</div><div>体积</div><div>内存</div><div>WebGL</div><div>推荐度</div>
+    </div>
+    <div class="tech-row">
+      <div class="rec">Tauri 2.x + Three.js</div>
+      <div>~3-8MB</div><div>低</div><div>系统WebView</div>
+      <div class="star">⭐⭐⭐⭐⭐</div>
+    </div>
+    <div class="tech-row">
+      <div>Electron + Three.js</div>
+      <div>~80-150MB</div><div>高</div><div>内置Chromium</div>
+      <div class="star">⭐⭐</div>
+    </div>
+    <div class="tech-row">
+      <div>Python + PyOpenGL</div>
+      <div>~30-50MB</div><div>中</div><div>自渲染</div>
+      <div class="star">⭐⭐</div>
+    </div>
+    <div class="tech-row">
+      <div>C++ + Qt + OpenGL</div>
+      <div>~20-40MB</div><div>低</div><div>自渲染</div>
+      <div class="star">⭐⭐⭐</div>
+    </div>
+
+    <h3>3.2 推荐技术栈：Tauri 2.x + Vue3 + Three.js</h3>
+    <ul>
+      <li><strong>轻量</strong>：Tauri 复用系统 WebView，exe 体积仅 3-8MB</li>
+      <li><strong>生态</strong>：Three.js 与网页同源，可直接复用 loader 与渲染逻辑</li>
+      <li><strong>单文件</strong>：Tauri 2.x 支持 portable 模式，生成单 exe 无需安装</li>
+      <li><strong>开发效率</strong>：Vue3 + Three.js 开发体验好，Rust 后端处理文件 IO</li>
+    </ul>
+    <p style="margin-top:12px"><strong>关键技术点：</strong>FBXLoader / GLTFLoader / OBJLoader / PLYLoader、AnimationMixer、材质贴图提取、Tauri portable 打包</p>
+  </section>
+
+  <!-- 4. 架构设计 -->
+  <section>
+    <h2><span class="num">4</span>架构设计</h2>
+    <h3>4.1 目录结构</h3>
+    <div class="tree"><span class="c">MMY-3DModelViewer/</span>
+├── src-tauri/              <span class="c"># Rust 后端</span>
+│   ├── src/
+│   │   ├── main.rs         <span class="c"># 入口</span>
+│   │   ├── commands/       <span class="c"># Tauri 命令</span>
+│   │   │   ├── file.rs     <span class="c"># 文件读取/保存</span>
+│   │   │   └── recent.rs   <span class="c"># 最近打开记录</span>
+│   │   └── config.rs       <span class="c"># 配置持久化</span>
+│   └── tauri.conf.json     <span class="c"># 打包配置（portable 模式）</span>
+├── src/                    <span class="c"># Vue3 前端</span>
+│   ├── views/Viewer.vue   <span class="c"># 主预览界面</span>
+│   ├── components/         <span class="c"># DropZone / ModelInfo / Toolbar ...</span>
+│   ├── composables/        <span class="c"># useThreeScene / useModelLoader ...</span>
+│   └── three/              <span class="c"># Scene / Loaders / Exporter</span>
+└── package.json</div>
+
+    <h3>4.2 界面布局（左列表右详情）</h3>
+    <div class="layout">┌─────────────────────────────────────────────────┐
+│  [导入模型]  [最近打开▼]            [截图] [设置] │
+├──────────────┬──────────────────────────────────┤
+│ 模型列表      │                                  │
+│ ┌──────────┐ │                                  │
+│ │ model1   │ │       3D 预览画布                │
+│ │ model2 ●│ │      (拖拽导入区)                 │
+│ │ model3   │ │                                  │
+│ └──────────┘ │                                  │
+├──────────────┼──────────────────────────────────┤
+│ 模型信息      │ [实体|线框|法线] [▶动画] [网格]  │
+│ 顶点: 1234   │                                  │
+│ 面数: 567    │ 贴图列表：[贴图1↓][贴图2↓]       │
+│ 材质: 2      │                                  │
+└──────────────┴──────────────────────────────────┘</div>
+  </section>
+
+  <!-- 5. 开发阶段 -->
+  <section>
+    <h2><span class="num">5</span>开发阶段规划</h2>
+
+    <div class="phase">
+      <div class="pt">阶段 1：MVP 核心预览 <span class="tag">先跑起来</span></div>
+      <ul>
+        <li>Tauri 项目搭建 + Vue3 + Three.js 集成</li>
+        <li>拖拽/点击导入 GLB/glTF（最易实现）</li>
+        <li>基础相机控制（OrbitControls）</li>
+        <li>模型信息统计显示</li>
+      </ul>
+      <div class="accept">验收：能导入 gltf 并旋转查看</div>
+    </div>
+
+    <div class="phase">
+      <div class="pt">阶段 2：多格式 + 动画 <span class="tag">功能扩展</span></div>
+      <ul>
+        <li>接入 FBXLoader / OBJLoader / PLYLoader</li>
+        <li>AnimationMixer 动画播放控制</li>
+        <li>显示模式切换（实体/线框/法线/骨骼）</li>
+        <li>网格、坐标轴、灯光辅助</li>
+      </ul>
+      <div class="accept">验收：FBX 动画可播放，多格式可加载</div>
+    </div>
+
+    <div class="phase">
+      <div class="pt">阶段 3：贴图导出 + 截图 <span class="tag">导出能力</span></div>
+      <ul>
+        <li>遍历材质提取贴图</li>
+        <li>PNG/JPG/WebP 导出（Tauri 文件保存对话框）</li>
+        <li>当前视角截图导出</li>
+      </ul>
+      <div class="accept">验收：贴图与截图可保存到本地</div>
+    </div>
+
+    <div class="phase">
+      <div class="pt">阶段 4：体验优化 + 打包 <span class="tag">交付</span></div>
+      <ul>
+        <li>最近打开列表（本地 JSON 持久化）</li>
+        <li>错误处理、加载进度条、大模型性能优化</li>
+        <li>Tauri portable 模式打包单 exe</li>
+        <li>图标、签名、体积优化</li>
+      </ul>
+      <div class="accept">验收：单 exe 双击可用，体积 &lt; 10MB</div>
+    </div>
+  </section>
+
+  <!-- 6. 风险与对策 -->
+  <section>
+    <h2><span class="num">6</span>关键技术风险与对策</h2>
+    <div class="risk">
+      <div class="risk-item"><div class="rt">FBXLoader 依赖 fflate，体积大</div><div class="rc">按需加载，打包时 tree-shaking</div></div>
+      <div class="risk-item"><div class="rt">系统 WebView 差异</div><div class="rc">限定 Win10+，打包时检测 WebView2</div></div>
+      <div class="risk-item"><div class="rt">大模型内存溢出</div><div class="rc">加载前预估，&gt;100MB 警告</div></div>
+      <div class="risk-item"><div class="rt">Tauri 单文件模式限制</div><div class="rc">资源全部内嵌 resources + dist</div></div>
+      <div class="risk-item"><div class="rt">贴图格式多样（KTX2/DDS）</div><div class="rc">集成 KTX2Loader，必要时转码</div></div>
+    </div>
+  </section>
+
+  <!-- 7. 功能对照 -->
+  <section>
+    <h2><span class="num">7</span>功能完成度对照表</h2>
+    <table>
+      <thead><tr><th>网页功能</th><th>本工具</th><th>类型</th></tr></thead>
+      <tbody>
+        <tr><td>拖拽/点击导入</td><td>✅ 支持</td><td>对标</td></tr>
+        <tr><td>FBX 格式</td><td>✅ FBXLoader</td><td>对标</td></tr>
+        <tr><td>GLB/glTF 格式</td><td>✅ GLTFLoader</td><td>对标</td></tr>
+        <tr><td>OBJ 格式</td><td>✅ OBJLoader</td><td>对标</td></tr>
+        <tr><td>PLY 格式</td><td>✅ PLYLoader</td><td>对标</td></tr>
+        <tr><td>模型信息统计</td><td>✅ 顶点/面/材质/贴图/动画</td><td>对标</td></tr>
+        <tr><td>贴图导出 PNG/JPG/WebP</td><td>✅ 支持</td><td>对标</td></tr>
+        <tr><td>3D 预览交互</td><td>✅ OrbitControls</td><td>对标</td></tr>
+        <tr><td>—</td><td>➕ 动画播放控制</td><td style="color:var(--ok)">增强</td></tr>
+        <tr><td>—</td><td>➕ 多显示模式</td><td style="color:var(--ok)">增强</td></tr>
+        <tr><td>—</td><td>➕ 最近打开列表</td><td style="color:var(--ok)">增强</td></tr>
+        <tr><td>—</td><td>➕ 截图导出</td><td style="color:var(--ok)">增强</td></tr>
+        <tr><td>—</td><td>➕ 离线运行</td><td style="color:var(--ok)">本地化优势</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8. 交付物 -->
+  <section>
+    <h2><span class="num">8</span>交付物</h2>
+    <ul>
+      <li><strong>单文件 exe</strong>（MMY-3DModelViewer.exe，目标 &lt; 10MB）</li>
+      <li><strong>源码仓库</strong>（含 README、构建脚本）</li>
+      <li><strong>功能清单</strong>（对标网页的完成度对照表）</li>
+    </ul>
+  </section>
+
+  <footer>
+    MMY-3DModelViewer · 规划方案报告 · 生成于 2026-07-10
+  </footer>
+
+</div>
+</body>
+</html>
