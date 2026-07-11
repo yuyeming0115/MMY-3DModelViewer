@@ -16,3 +16,6 @@ Thumbs.db
 .vscode/
 .idea/
 .trae/
+
+# WorkBuddy 项目配置（不版本控制）
+.workbuddy/
