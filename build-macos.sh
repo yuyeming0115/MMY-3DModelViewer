@@ -53,7 +53,7 @@ fi
 echo -e "  ${GREEN}✔ 前端依赖就绪${NC}"
 
 # 4. 生成图标（如果源图标比目标新）
-SRC_ICON="$ROOT/素材/FBXView-logo.png"
+SRC_ICON="$ROOT/素材/icon.png"
 DST_ICON="$ROOT/src-tauri/icons/icon.png"
 NEED_ICON=0
 

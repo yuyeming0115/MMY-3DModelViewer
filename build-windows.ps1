@@ -30,7 +30,7 @@ if (-not (Test-Path "node_modules")) {
 Write-Host "  ✔ 前端依赖就绪" -ForegroundColor Green
 
 # 3. 生成图标（如果源图标比目标新）
-$srcIcon = Join-Path $root "素材\FBXView-logo.png"
+$srcIcon = Join-Path $root "素材\icon.png"
 $dstIcon = Join-Path $root "src-tauri\icons\icon.png"
 if ((Test-Path $srcIcon) -and ((-not (Test-Path $dstIcon)) -or ((Get-Item $srcIcon).LastWriteTime -gt (Get-Item $dstIcon).LastWriteTime))) {
     Write-Host ""

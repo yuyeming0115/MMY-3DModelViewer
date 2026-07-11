@@ -1,7 +1,7 @@
 # MMY-3DModelViewer 打包说明
 
 本工具基于 Tauri 2.x + Vue3 + Three.js，支持 Windows 和 macOS 双平台打包。
-图标源文件：`素材/FBXView-logo.png`（打包脚本会自动裁切为 1024×1024 正方形并生成全平台图标）。
+图标源文件：`素材/icon.png`（打包脚本会自动裁切为 1024×1024 正方形并生成全平台图标）。
 
 ---
 
@@ -83,7 +83,7 @@ chmod +x build-macos.sh
 
 1. **检查依赖** — 确认 Node.js / Rust / 平台工具链已安装
 2. **安装前端依赖** — `npm install`（如 `node_modules` 已存在则跳过）
-3. **生成图标** — 从 `素材/FBXView-logo.png` 裁切为 1024×1024 正方形，再用 `npx tauri icon` 生成全平台图标
+3. **生成图标** — 从 `素材/icon.png` 裁切为 1024×1024 正方形，再用 `npx tauri icon` 生成全平台图标
    - Windows: 脚本只在源图标更新时才重新生成，避免重复工作
 4. **构建产物** — `npx tauri build` 指定目标平台
 5. **输出结果** — 打印产物路径和大小
@@ -125,7 +125,7 @@ MMY-3DModelViewer/
 ├── build-macos.sh           # macOS 一键打包脚本
 ├── BUILD.md                 # 本文档
 ├── 素材/
-│   └── FBXView-logo.png     # 图标源文件
+│   └── icon.png     # 图标源文件
 ├── src-tauri/
 │   ├── tauri.conf.json      # Tauri 配置（bundle targets、图标、NSIS、macOS）
 │   ├── icons/               # 自动生成的全平台图标
@@ -147,7 +147,7 @@ MMY-3DModelViewer/
 npm install
 
 # 2. 生成图标（可选，首次需要）
-npx tauri icon 素材/FBXView-logo.png --output src-tauri/icons
+npx tauri icon 素材/icon.png --output src-tauri/icons
 
 # 3a. Windows 构建（NSIS 单文件）
 npx tauri build --target nsis
